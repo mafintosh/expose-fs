@@ -6,6 +6,8 @@ Expose a file system over http
 npm install -g expose-fs
 ```
 
+## Usage
+
 This install a command line tool called `expose-fs`
 
 ```
@@ -20,3 +22,7 @@ curl localhost:8441/some-file.txt # returns the file content
 ```
 
 Run `expose-fs --help` for additional options
+
+## License
+
+MIT

@@ -1,0 +1,4 @@
+expose-fs [folder] [options]
+
+  --port,   -p   Port to listen on. Defaults to 8441
+  --quiet,  -q   Be quiet

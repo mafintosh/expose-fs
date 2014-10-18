@@ -1,0 +1,19 @@
+{
+  "name": "expose-fs",
+  "version": "0.0.0",
+  "description": "expose your filesystem using a http server",
+  "main": "server.js",
+  "dependencies": {
+    "after-all": "^2.0.1",
+    "minimist": "^1.1.0",
+    "pump": "^1.0.0"
+  },
+  "bin": {
+    "expose-fs": "./bin.js"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,71 @@
+var http = require('http')
+var fs = require('fs')
+var after = require('after-all')
+var pump = require('pump')
+var path = require('path')
+
+module.exports = function(root) {
+  if (!root) root = '/'
+  root = fs.realpathSync(root)
+
+  var trim = function(u) {
+    u = u.replace(root)
+    if (u[0] !== '/') u = '/'+u
+    return u
+  }
+
+  var server = http.createServer(function(req, res) {
+    var onerror = function(err) {
+      res.statusCode = err.code === 'ENOENT' ? 404 : 500
+      res.end(err.message)
+    }
+
+    res.setHeader('Access-Control-Allow-Origin', '*')
+
+    var name = path.join('/', req.url.split('?')[0])
+    var u = path.join(root, name)
+
+    var onfile = function(st) {
+      server.emit('file', u, st)
+      res.setHeader('Content-Length', st.size)
+      pump(fs.createReadStream(u), res)
+    }
+
+    var ondirectory = function(st) {
+      server.emit('directory', u, st)
+      fs.readdir(u, function(err, files) {
+        if (err) return onerror(err)
+
+        var next = after(function() {
+          res.end(JSON.stringify(files))
+        })
+
+        files.forEach(function(file, i) {
+          var n = next()
+
+          fs.stat(path.join(u, file), function(err, st) {
+            if (err) return n(err)
+
+            files[i] = {
+              path: trim(path.join(u, file)),
+              type: st.isDirectory() ? 'directory' : 'file',
+              size: st.size
+            }
+
+            n()
+          })
+        })
+      })
+    }
+
+    fs.stat(u, function(err, st) {
+      if (err) return onerror(err)
+      if (st.isDirectory()) return ondirectory(st)
+      onfile(st)
+    })
+  })
+
+  server.root = root
+
+  return server
+}

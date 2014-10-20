@@ -9,7 +9,7 @@ module.exports = function(root) {
   root = fs.realpathSync(root)
 
   var trim = function(u) {
-    u = u.replace(root)
+    u = u.replace(root, '')
     if (u[0] !== '/') u = '/'+u
     return u
   }

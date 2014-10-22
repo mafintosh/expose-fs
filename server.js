@@ -28,7 +28,7 @@ module.exports = function(root) {
     var u = path.join(root, name)
 
     if (req.method === 'POST') return mkdirp(u, onerror)
-    if (req.method === 'PUT') return pump(req, fs.createWriteStream(u))    
+    if (req.method === 'PUT') return pump(req, fs.createWriteStream(u), onerror)    
 
     var onfile = function(st) {
       server.emit('file', u, st)

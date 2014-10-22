@@ -3,6 +3,7 @@ var fs = require('fs')
 var after = require('after-all')
 var pump = require('pump')
 var path = require('path')
+var mkdirp = require('mkdirp')
 
 module.exports = function(root) {
   if (!root) root = '/'
@@ -16,6 +17,7 @@ module.exports = function(root) {
 
   var server = http.createServer(function(req, res) {
     var onerror = function(err) {
+      if (!err) return res.end()
       res.statusCode = err.code === 'ENOENT' ? 404 : 500
       res.end(err.message)
     }
@@ -24,6 +26,9 @@ module.exports = function(root) {
 
     var name = path.join('/', req.url.split('?')[0])
     var u = path.join(root, name)
+
+    if (req.method === 'POST') return mkdirp(u, onerror)
+    if (req.method === 'PUT') return pump(req, fs.createWriteStream(u))    
 
     var onfile = function(st) {
       server.emit('file', u, st)

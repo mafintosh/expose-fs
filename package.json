@@ -6,6 +6,7 @@
   "dependencies": {
     "after-all": "^2.0.1",
     "cors": "^2.4.2",
+    "localtunnel": "^1.4.0",
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.0",
     "pump": "^1.0.0"

@@ -4,6 +4,7 @@ var after = require('after-all')
 var pump = require('pump')
 var path = require('path')
 var mkdirp = require('mkdirp')
+var cors = require('cors')
 
 module.exports = function(root) {
   if (!root) root = '/'
@@ -15,14 +16,12 @@ module.exports = function(root) {
     return u
   }
 
-  var server = http.createServer(function(req, res) {
+  var onrequest = function(req, res) {
     var onerror = function(err) {
       if (!err) return res.end()
       res.statusCode = err.code === 'ENOENT' ? 404 : 500
       res.end(err.message)
     }
-
-    res.setHeader('Access-Control-Allow-Origin', '*')
 
     var name = path.join('/', req.url.split('?')[0])
     var u = path.join(root, name)
@@ -53,6 +52,7 @@ module.exports = function(root) {
 
             files[i] = {
               path: trim(path.join(u, file)),
+              mountPath: path.join(u, file), 
               type: st.isDirectory() ? 'directory' : 'file',
               size: st.size
             }
@@ -67,6 +67,13 @@ module.exports = function(root) {
       if (err) return onerror(err)
       if (st.isDirectory()) return ondirectory(st)
       onfile(st)
+    })
+  }
+
+  var c = cors()
+  var server = http.createServer(function(req, res) {
+    c(req, res, function() {
+      onrequest(req, res)
     })
   })
 

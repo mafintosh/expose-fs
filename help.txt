@@ -2,3 +2,4 @@ expose-fs [folder] [options]
 
   --port,   -p   Port to listen on. Defaults to 8441
   --quiet,  -q   Be quiet
+  --tunnel, -t   Use localtunnel to expose via a public url

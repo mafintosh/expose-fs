@@ -1,6 +1,6 @@
 {
   "name": "expose-fs",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "expose your filesystem using a http server",
   "main": "server.js",
   "dependencies": {

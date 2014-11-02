@@ -5,18 +5,21 @@ var pump = require('pump')
 var path = require('path')
 var mkdirp = require('mkdirp')
 var cors = require('cors')
+var url = require('url')
 
 module.exports = function(root) {
   if (!root) root = '/'
   root = fs.realpathSync(root)
 
-  var trim = function(u) {
-    u = u.replace(root, '')
-    if (u[0] !== '/') u = '/'+u
-    return u
-  }
-
   var onrequest = function(req, res) {
+    var qs = url.parse(req.url, true).query
+
+    var trim = function(u) {
+      u = u.replace(qs.root || root, '')
+      if (u[0] !== '/') u = '/'+u
+      return u
+    }
+
     var onerror = function(err) {
       if (!err) return res.end()
       res.statusCode = err.code === 'ENOENT' ? 404 : 500

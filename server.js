@@ -15,7 +15,7 @@ module.exports = function(root) {
     var qs = url.parse(req.url, true).query
 
     var trim = function(u) {
-      u = u.replace(qs.root || root, '')
+      u = u.replace(root, '')
       if (u[0] !== '/') u = '/'+u
       return u
     }
@@ -27,7 +27,7 @@ module.exports = function(root) {
     }
 
     var name = path.join('/', req.url.split('?')[0])
-    var u = path.join(qs.root || root, name)
+    var u = path.join(root, name)
 
     if (req.method === 'POST') return mkdirp(u, onerror)
     if (req.method === 'PUT') return pump(req, fs.createWriteStream(u), onerror)    

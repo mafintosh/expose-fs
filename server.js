@@ -26,11 +26,11 @@ module.exports = function(root) {
       res.end(err.message)
     }
 
-    var name = path.join('/', req.url.split('?')[0])
+    var name = path.join('/', req.url.split('?')[0]).replace(/%20/g, '\ ')
     var u = path.join(root, name)
 
     if (req.method === 'POST') return mkdirp(u, onerror)
-    if (req.method === 'PUT') return pump(req, fs.createWriteStream(u), onerror)    
+    if (req.method === 'PUT') return pump(req, fs.createWriteStream(u), onerror)
 
     var onfile = function(st) {
       server.emit('file', u, st)
@@ -55,7 +55,7 @@ module.exports = function(root) {
 
             files[i] = {
               path: trim(path.join(u, file)),
-              mountPath: path.join(u, file), 
+              mountPath: path.join(u, file),
               type: st.isDirectory() ? 'directory' : 'file',
               size: st.size
             }

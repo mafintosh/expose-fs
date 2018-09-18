@@ -58,7 +58,8 @@ module.exports = function(root) {
               path: trim(path.join(u, file)),
               mountPath: path.join(u, file),
               type: st.isDirectory() ? 'directory' : 'file',
-              size: st.size
+              size: st.size,
+              creationTimestamp: st.birthtimeMs
             }
 
             n()

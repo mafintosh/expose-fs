@@ -58,8 +58,16 @@ module.exports = function(root) {
               path: trim(path.join(u, file)),
               mountPath: path.join(u, file),
               type: st.isDirectory() ? 'directory' : 'file',
-              size: st.size,
-              creationTimestamp: st.birthtimeMs
+              size: st.isDirectory() ? null : st.size,
+              creationTimestamp: st.isDirectory() ? null : st.birthtimeMs,
+              extension: st.isDirectory()
+                         ? null
+                         : (path.extname(file).length > 0
+                            ? path.extname(file).substring(1)
+                            : (file.startsWith('.')
+                               ? file.substring(1)
+                               : null)
+                           )
             }
 
             n()

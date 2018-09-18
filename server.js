@@ -44,6 +44,7 @@ module.exports = function(root) {
         if (err) return onerror(err)
 
         var next = after(function() {
+          res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify(files))
         })
 

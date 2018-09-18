@@ -55,6 +55,7 @@ module.exports = function(root) {
             if (err) return n(err)
 
             files[i] = {
+              name: file,
               path: trim(path.join(u, file)),
               mountPath: path.join(u, file),
               type: st.isDirectory() ? 'directory' : 'file',

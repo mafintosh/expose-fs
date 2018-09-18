@@ -44,6 +44,7 @@ module.exports = function(root) {
         if (err) return onerror(err)
 
         var next = after(function() {
+          res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify(files))
         })
 
@@ -54,10 +55,20 @@ module.exports = function(root) {
             if (err) return n(err)
 
             files[i] = {
+              name: file,
               path: trim(path.join(u, file)),
               mountPath: path.join(u, file),
               type: st.isDirectory() ? 'directory' : 'file',
-              size: st.size
+              size: st.isDirectory() ? null : st.size,
+              creationTimestamp: st.isDirectory() ? null : st.birthtimeMs,
+              extension: st.isDirectory()
+                         ? null
+                         : (path.extname(file).length > 0
+                            ? path.extname(file).substring(1)
+                            : (file.startsWith('.')
+                               ? file.substring(1)
+                               : null)
+                           )
             }
 
             n()
